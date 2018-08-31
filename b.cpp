@@ -205,8 +205,8 @@ int main(){
     double lambda1 = 6;
     double lambda2 = 3;
     
-    string e_file_name = "../_data/e.txt";
-    string n_file_name = "../_data/n.txt";
+    string e_file_name = "./_data/e.txt";
+    string n_file_name = "./_data/n.txt";
     
     int *edges1, *edges2;
     double *Y;
