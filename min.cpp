@@ -275,7 +275,7 @@ double** minCut(double** graph, int s, int t, bool *visited, const int V) {
         }
     }
     */
-    printf("maxflow is %f \n", max_flow);
+    //printf("maxflow is %f \n", max_flow);
     return rGraph;
 }
 /*----------------------------------------------*/
@@ -358,7 +358,7 @@ void graph_tv(double *Y,// value of nodes
                  graph_old[u][v] = graph[u][v];
             }
         }
-      printf("\n residual graph before min-cut: \n");
+      /*printf("\n residual graph before min-cut: \n");
       for (int u = 0; u < V; u++) {
           for (int v = 0; v < V; v++) {
                printf("%5.2f ", graph[u][v]);
@@ -366,10 +366,11 @@ void graph_tv(double *Y,// value of nodes
           printf("\n");
       }
       printf("\n");
+      */
       bool *visited = new bool[V];
       graph = minCut(graph, 0, 1, visited, V);
 
-      
+      /*
       printf("\n residual graph after min-cut: \n");
       for (int u = 0; u < V; u++) {
           for (int v = 0; v < V; v++) {
@@ -378,7 +379,7 @@ void graph_tv(double *Y,// value of nodes
           printf("\n");
       }
       printf("\n");
-      
+      */
 
       memset(averages,0,nlab*sizeof(captype));
       memset(nums,0,nlab*sizeof(int));
@@ -387,7 +388,7 @@ void graph_tv(double *Y,// value of nodes
 
         for (int i = 0; i < n; i++)
           if (alive[i]) {
-            printf("!!!!!!!!!!!!!! %d  \n",l);
+            //printf("!!!!!!!!!!!!!! %d  \n",l);
             if (visited[i+2]==1) {
               l=nextlabel[label[i]];
               if (l==0) {
@@ -409,7 +410,7 @@ void graph_tv(double *Y,// value of nodes
               label[i] = l;
               averages[l] += graph[0][i+2]; // might be wrong!!!
               nums[l]++;
-              printf("I am in ++ \n");
+              //printf("I am in ++ \n");
             } else { // what_segment(i) == sink
               l=label[i];
               averages[l] -= graph[i+2][1];
@@ -417,7 +418,7 @@ void graph_tv(double *Y,// value of nodes
               //	      i->tr_cap += delta;
               for (int j = 0; j < n; j++) // easy to be wrong !!!
                 if (graph_old[i+2][j+2] != 0 && visited[j+2]) { graph[i+2][j+2]=0;}
-              printf("I am in -- \n");
+              //printf("I am in -- \n");
             }
           }
 
@@ -436,7 +437,7 @@ void graph_tv(double *Y,// value of nodes
           for (; l<nlab; l++) {
             averages[l] /= (double) nums[l];
             values[l]   += averages[l];
-            printf("!!!!!!!!!!!!!! %d, %d, %f \n",nums[l], l, averages[l]);
+            //printf("!!!!!!!!!!!!!! %d, %d, %f \n",nums[l], l, averages[l]);
           }
         flagstop=0;
         //printf("\n residual graph after gtf!!!!!!!!!!!: \n");
@@ -470,7 +471,7 @@ void graph_tv(double *Y,// value of nodes
             } // end else
           } // end for
         }
-        
+          /*
           printf("\n residual graph after gtf: \n");
           for (int u = 0; u < V; u++) {
               for (int v = 0; v < V; v++) {
@@ -479,7 +480,7 @@ void graph_tv(double *Y,// value of nodes
               printf("\n");
           }
           printf("\n");
-
+          */
         
         } while (flagstop);
 
