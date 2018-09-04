@@ -481,7 +481,7 @@ void graph_tv(double *Y,// value of nodes
           }
           printf("\n");
           */
-        
+
         } while (flagstop);
 
         free(nextlabel);
@@ -503,37 +503,29 @@ void soft_thresh(double *Y, const double thresh, const int n){
 
 
 int main(){
+    string start_time = "2011-06-26 12:00:00";
+    string end_time = "2011-06-26 14:00:00";
     double lambda1 = 6;
     double lambda2 = 3;
-    
-    string e_file_name = "./_data/e.txt";
-    string n_file_name = "./_data/n.txt";
-    
-    int *edges1, *edges2;
-    double *Y;
+    vector<string> nodes_fil, diffs_fil;
+    read_nodes(start_time, end_time, nodes_fil, diffs_fil);
 
-    ifstream n_infile(n_file_name);
-    ifstream e_infile(e_file_name);
-    int tm1, tm2, j = 0, n = 0, m = 0;
-    double tm3;  
-    e_infile >> tm1 >> tm2;
-    m = tm2;
-    n = tm1;
-    cout << m << n << "!!!!!!!!!!!!";
-    Y = new double[n]; // nodes filled
+    int n = nodes_fil.size();
+    vector<int> srcs_fil_no_dup, trgs_fil_no_dup;
+    int m = read_edges(nodes_fil, srcs_fil_no_dup, trgs_fil_no_dup);
+
+    double *Y = new double[n]; // nodes filled
+    for(int i = 0; i < n; i++) Y[i] = stod(diffs_fil[i]);
+
+    int *edges1, *edges2;
     edges1 = new int[m];
     edges2 = new int[m];
-    while(e_infile >> tm1 >> tm2){
-      edges1[j] = tm1;
-      edges2[j++] = tm2;
-    } 
 
-    j = 0;
-    while(n_infile >> tm3){
-      Y[j++] = tm3;
-    } 
+    for(int i = 0; i < m; i++){
+      edges1[i] = srcs_fil_no_dup[i];
+      edges2[i] = trgs_fil_no_dup[i];
+    }
 
-    
     cout << "Done! "<< "# of nodes: " << n << "; # of edges: " << m << endl;
     for(int i = 0; i < 30; i++){
       cout << Y[i] << ' ' << edges1[i] << ' ' << edges2[i] << endl;
@@ -548,7 +540,7 @@ int main(){
     for(int i = 0;  i < 30; i++){
         printf("result is %f. \n", Y[i]);
     }
-    ofstream out( "output_min.txt" );
+    ofstream out( "../output_min.txt" );
     //out.precision(3);
     for(int i = 0; i < n; i++){
         out << Y[i] << endl;
