@@ -22,7 +22,7 @@ using namespace std;
 template <class InputIterator, class OutputIterator, class UnaryPredicate>
   void copy_if_v1 (InputIterator first, InputIterator last,
                           InputIterator in1, InputIterator in2,
-                          OutputIterator result1, OutputIterator result2, 
+                          OutputIterator result1, OutputIterator result2,
                           UnaryPredicate pred)
 {
   while (first!=last) {
@@ -47,11 +47,11 @@ void read_nodes(const string& from, const string& to, vector<string>& nodes_fil,
   string diff;
   string group;
   string tmp;
-  
+
   vector<string> nodes;
   vector<string> diffs;
   vector<string> groups;
-  
+
   getline(ip, tmp);
 
   int i = 0;
@@ -62,23 +62,23 @@ void read_nodes(const string& from, const string& to, vector<string>& nodes_fil,
     getline(ss, node,'\t');
     getline(ss, diff,'\t');
     getline(ss, group,'\n');
-   
+
     //cout << node << ' ' << diff << ' ' << group << ' ' << i << endl;
     nodes.push_back(node);
     diffs.push_back(diff);
     groups.push_back(group);
   }
-  
-  copy_if_v1(groups.begin(), 
-             groups.end(), 
-             nodes.begin(), 
+
+  copy_if_v1(groups.begin(),
+             groups.end(),
+             nodes.begin(),
              diffs.begin(),
-             std::inserter(nodes_fil, nodes_fil.begin()), 
-             std::inserter(diffs_fil, diffs_fil.begin()), 
+             std::inserter(nodes_fil, nodes_fil.begin()),
+             std::inserter(diffs_fil, diffs_fil.begin()),
              [from,to](string& val){
   	return val >= from && val < to;
   });
-   
+
   std::ofstream output_file("../example.txt");
   ostream_iterator<std::string> output_iterator(output_file, "\n");
   std::copy(nodes_fil.begin(), nodes_fil.end(), output_iterator);
@@ -94,7 +94,7 @@ int read_edges(const vector<string>& nodes, vector<int>& srcs_fil_no_dup, vector
   string trg;
   string tmp;
   vector<string> srcs, trgs;
-  
+
   getline(ip, tmp);
 
   int i = 0;
@@ -102,16 +102,16 @@ int read_edges(const vector<string>& nodes, vector<int>& srcs_fil_no_dup, vector
     i += 1;
     //if(i == 100) break;
     istringstream ss(tmp);
-    
+
     getline(ss, src, '\t');
     getline(ss, trg, '\n');
-    
+
     srcs.push_back(src);
     trgs.push_back(trg);
     //std::cout << src << " ---- " << trg << '\n';
   }
-  map<string, int> map_nodes; 
-  set<pair<int, int>> set_edges; 
+  map<string, int> map_nodes;
+  set<pair<int, int>> set_edges;
   for (i = 0; i < nodes.size(); i++){
     map_nodes[nodes[i]] = i;
   }
@@ -121,7 +121,7 @@ int read_edges(const vector<string>& nodes, vector<int>& srcs_fil_no_dup, vector
   while(src_iter != srcs.end() && trg_iter != trgs.end()){
     auto it1 = map_nodes.find(*src_iter);
     auto it2 = map_nodes.find(*trg_iter);
-    
+
     if (it1 != map_nodes.end() && it2 != map_nodes.end()){
       if(it1->second <= it2->second){
         srcs_fil.push_back(it1->second);
@@ -136,7 +136,7 @@ int read_edges(const vector<string>& nodes, vector<int>& srcs_fil_no_dup, vector
     trg_iter++;
   }
 
-   
+
   for(i = 0; i < srcs_fil.size(); i++){
     pair<int, int> p(srcs_fil[i], trgs_fil[i]);
     if(set_edges.find(p) == set_edges.end()){
@@ -145,7 +145,7 @@ int read_edges(const vector<string>& nodes, vector<int>& srcs_fil_no_dup, vector
       trgs_fil_no_dup.push_back(trgs_fil[i]);
     }
   }
-  
+
   ofstream out( "../test.txt" );
   for(i = 0; i < srcs_fil_no_dup.size(); i++){
     out << srcs_fil_no_dup[i] << ' ' << trgs_fil_no_dup[i] << endl;
@@ -153,7 +153,7 @@ int read_edges(const vector<string>& nodes, vector<int>& srcs_fil_no_dup, vector
     // cout << srcs_fil_no_dup[i] << ' ' << trgs_fil_no_dup[i] << endl;
   }
   out.close();
-  
+
   ip.close();
 
   return set_edges.size();
@@ -201,38 +201,63 @@ void soft_thresh(double *Y, const double thresh, const int n){
 }
 
 
-int main(){
-    double lambda1 = 6;
-    double lambda2 = 3;
-    
-    string e_file_name = "./_data/e.txt";
-    string n_file_name = "./_data/n.txt";
-    
-    int *edges1, *edges2;
-    double *Y;
+int main(int argc, char** argv){
+  double lambda1 = 6;
+  double lambda2 = 3;
+  int *edges1, *edges2;
+  bool big_graph = false;
+  int m, n;
+  double *Y;
+
+  if(big_graph){
+    string start_time = "2011-06-26 12:00:00";
+    string end_time = "2011-06-26 14:00:00";
+
+    vector<string> nodes_fil, diffs_fil;
+    read_nodes(start_time, end_time, nodes_fil, diffs_fil);
+
+    n = nodes_fil.size();
+    vector<int> srcs_fil_no_dup, trgs_fil_no_dup;
+    m = read_edges(nodes_fil, srcs_fil_no_dup, trgs_fil_no_dup);
+
+    Y = new double[n]; // nodes filled
+    for(int i = 0; i < n; i++) Y[i] = stod(diffs_fil[i]);
+
+    edges1 = new int[m];
+    edges2 = new int[m];
+
+    for(int i = 0; i < m; i++){
+      edges1[i] = srcs_fil_no_dup[i];
+      edges2[i] = trgs_fil_no_dup[i];
+    }
+  }
+  else{
+    string e_file_name = "../_data/e.txt";
+    string n_file_name = "../_data/n.txt";
 
     ifstream n_infile(n_file_name);
     ifstream e_infile(e_file_name);
-    int tm1, tm2, j = 0, n = 0, m = 0;
-    double tm3;  
+    int tm1, tm2, j = 0;
+    double tm3;
     e_infile >> tm1 >> tm2;
     m = tm2;
     n = tm1;
-    cout << m << n << "!!!!!!!!!!!!";
     Y = new double[n]; // nodes filled
+    cout << m << ' ' << n << endl;
     edges1 = new int[m];
     edges2 = new int[m];
     while(e_infile >> tm1 >> tm2){
       edges1[j] = tm1;
       edges2[j++] = tm2;
-    } 
+    }
 
     j = 0;
     while(n_infile >> tm3){
       Y[j++] = tm3;
-    } 
+    }
 
-    
+  }
+  cout << m << ' ' << n << endl;
     cout << "Done! "<< "# of nodes: " << n << "; # of edges: " << m << endl;
     for(int i = 0; i < 30; i++){
       cout << Y[i] << ' ' << edges1[i] << ' ' << edges2[i] << endl;
@@ -247,7 +272,7 @@ int main(){
     for(int i = 0;  i < 30; i++){
         printf("result is %f. \n", Y[i]);
     }
-    ofstream out( "output_wang.txt" );
+    ofstream out( "./output_wang.txt" );
     //out.precision(3);
     for(int i = 0; i < n; i++){
         out << Y[i] << endl;
