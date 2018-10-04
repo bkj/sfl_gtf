@@ -272,7 +272,7 @@ int main(int argc, char** argv){
     for(int i = 0;  i < 30; i++){
         printf("result is %f. \n", Y[i]);
     }
-    ofstream out( "./output_wang.txt" );
+    ofstream out( "./output_graphtv.txt" );
     //out.precision(3);
     for(int i = 0; i < n; i++){
         out << Y[i] << endl;

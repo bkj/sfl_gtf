@@ -7,14 +7,12 @@
 #include <map>
 #include <set>
 #include <sstream>
-#include "graph.h"
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
 #include <limits.h>
-#include "graph.h"
 #include <time.h>
 #include <queue>
 
@@ -343,7 +341,7 @@ int main(int argc, char** argv){
 
     cout << "time is " << ((float)t2 - (float)t1) / CLOCKS_PER_SEC << endl;
     for(int i = 0;  i < 30; i++) printf("result is %f. \n", Y[i]);
-    ofstream out( "./output_mine.txt" );
+    ofstream out( "./output_ffa.txt" );
     for(int i = 0; i < n; i++) out << Y[i] << endl;
 
   return 0;
