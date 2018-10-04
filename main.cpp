@@ -48,7 +48,7 @@ void graph_tv(
       BKG->set_tweights(no,Y[i],0.);
     }
     for (i=0;i<m;i++) {
-        BKG->add_edge(nodes[edges1[i]],nodes[edges2[i]],dr,dr);
+      BKG->add_edge(nodes[edges1[i]],nodes[edges2[i]],dr,dr);
     }
     BKG->dyadicparametricTV(erreur);
     for (i=0;i<n;i++) Y[i]=BKG->what_value(nodes[i]);
