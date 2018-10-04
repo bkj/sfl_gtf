@@ -232,8 +232,8 @@ int main(int argc, char** argv){
     }
   }
   else{
-    string e_file_name = "../_data/e.txt";
-    string n_file_name = "../_data/n.txt";
+    string e_file_name = "./_data/e.txt";
+    string n_file_name = "./_data/n.txt";
 
     ifstream n_infile(n_file_name);
     ifstream e_infile(e_file_name);
@@ -269,9 +269,6 @@ int main(int argc, char** argv){
     soft_thresh(Y, lambda2, n);
     t2 = clock();
     cout << "time is " << ((float)t2 - (float)t1) / CLOCKS_PER_SEC << endl;
-    for(int i = 0;  i < 30; i++){
-        printf("result is %f. \n", Y[i]);
-    }
     ofstream out( "./output_graphtv.txt" );
     //out.precision(3);
     for(int i = 0; i < n; i++){

@@ -93,7 +93,6 @@ double** minCut(double** graph, int s, int t, bool *visited, const int V) {
 
         // update residual capacities of the edges and reverse edges
         // along the path
-        //printf("residual\n");
         for (v = t; v != s; v = parent[v]) {
             u = parent[v];
             //printf("%d -> %d\n", u, v);
@@ -183,7 +182,6 @@ void graph_tv(double *Y,// value of nodes
     double** graph_old = new double*[V];  // rGraph[i][j] indicates residual capacity of edge i-j
 
     do {
-        printf("iter %d\n", iter++);
         for (int u = 0; u < V; u++) {
             graph_old[u] = new double[V];
             for (int v = 0; v < V; v++) {
@@ -303,8 +301,8 @@ int main(int argc, char** argv){
     int m, n;
     double *Y;
 
-    string e_file_name = "../_data/e.txt";
-    string n_file_name = "../_data/n.txt";
+    string e_file_name = "./_data/e.txt";
+    string n_file_name = "./_data/n.txt";
 
     ifstream n_infile(n_file_name);
     ifstream e_infile(e_file_name);
@@ -340,7 +338,6 @@ int main(int argc, char** argv){
     t2 = clock();
 
     cout << "time is " << ((float)t2 - (float)t1) / CLOCKS_PER_SEC << endl;
-    for(int i = 0;  i < 30; i++) printf("result is %f. \n", Y[i]);
     ofstream out( "./output_ffa.txt" );
     for(int i = 0; i < n; i++) out << Y[i] << endl;
 
