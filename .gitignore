@@ -1,0 +1,5 @@
+reference/snap/*
+results/*
+*.pyc
+main
+res

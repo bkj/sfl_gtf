@@ -283,7 +283,6 @@ void Graph::dyadicparametricTV(float erreur)
     free(inactivelabel);
     free(nums); free(averages);
 }
-/***********************************************************************/
 
 //int Graph::what_label(node_id i) { return (int) (((node*) i)->label) ; }
 double Graph::what_value(node_id i)
