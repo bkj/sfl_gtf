@@ -88,11 +88,6 @@ void Graph::dyadicparametricTV(float erreur)
   memset(inactivelabel,0,sizeof(unsigned char)*maxlabel);
   // initialisation, some kind of normalization
 
-  printf("tr_cap before normalization (before maxflow): \n");
-  for (i=node_block->ScanFirst(); i; i=node_block->ScanNext()) {
-    printf("%f \n",i->tr_cap);
-  }
-
   moy=0.; num=0;
   for (i=node_block->ScanFirst(); i; i=node_block->ScanNext()) {
     moy += i->tr_cap;
@@ -105,12 +100,6 @@ void Graph::dyadicparametricTV(float erreur)
     i->tr_cap -= moy;
     i->label=0;
   }
-
-  printf("\ntr_cap after normalization (before maxflow): \n");
-  for (i=node_block->ScanFirst(); i; i=node_block->ScanNext()) {
-    printf("%f \n",i->tr_cap);
-  }
-
 
 	// for (l=numlevel-1;l>=0;l--) {
       do {
@@ -217,11 +206,6 @@ void Graph::dyadicparametricTV(float erreur)
 		else current_node = NULL;
 	}
 
-  printf("flow in this run is %f, \n", flow);
-      printf("\ntr_cap after min_cut is: \n");
-      for (i=node_block->ScanFirst(); i; i=node_block->ScanNext()) {
-        printf("%f \n",i->tr_cap);
-      }
 	delete nodeptr_block;
 
 	memset(averages,0,nlab*sizeof(captype));
@@ -230,8 +214,6 @@ void Graph::dyadicparametricTV(float erreur)
 	oldnlab=nlab;
 	  for (i=node_block->ScanFirst(); i; i=node_block->ScanNext())
 	    if (i->alive) {
-          printf("!!!!!!!!!!!!!! %d \n",l);
-          //printf("!!!!!!!!!!!!!! %d, %d, %f \n",nums[l], l, averages[l]);
 	      if (what_segment(i)==SOURCE) {
 		      l=nextlabel[i->label];
 		      if (l==0) {
@@ -278,7 +260,6 @@ void Graph::dyadicparametricTV(float erreur)
 	    for (; l<nlab; l++) {
 	      averages[l] /= (double) nums[l];
 	      values[l]   += averages[l];
-          printf("!!!!!!!!!!!!!! %d, %d, %f \n",nums[l], l, averages[l]);
 	    }
 
 	  flagstop=0;
@@ -297,19 +278,13 @@ void Graph::dyadicparametricTV(float erreur)
 	      } // end else
 	    } // end for
 
-      printf("\ntr_cap after gtf is: \n");
-      for (i=node_block->ScanFirst(); i; i=node_block->ScanNext()) {
-        printf("%f \n",i->tr_cap);
-      }
     } while (flagstop); // do the outer do-while loop
 
     free(nextlabel);
     free(inactivelabel);
     free(nums); free(averages);
 }
-/***********************************************************************/
 
-//int Graph::what_label(node_id i) { return (int) (((node*) i)->label) ; }
-double Graph::what_value(node_id i)
-{ //printf("u are calling me buddy! \n");
-  return (double) values[(((node*) i)->label)] ; }
+double Graph::what_value(node_id i) {
+  return (double) values[(((node*) i)->label)];
+}
