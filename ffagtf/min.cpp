@@ -303,8 +303,8 @@ int main(int argc, char** argv){
     int m, n;
     double *Y;
 
-    string e_file_name = "../_data/e.txt";
-    string n_file_name = "../_data/n.txt";
+    string e_file_name = "./_data/e_mine";
+    string n_file_name = "./_data/n";
 
     ifstream n_infile(n_file_name);
     ifstream e_infile(e_file_name);
@@ -314,7 +314,6 @@ int main(int argc, char** argv){
     m = tm2;
     n = tm1;
     Y = new double[n]; // nodes filled
-    cout << m << ' ' << n << endl;
     edges1 = new int[m];
     edges2 = new int[m];
     while(e_infile >> tm1 >> tm2){
@@ -327,11 +326,7 @@ int main(int argc, char** argv){
       Y[j++] = tm3;
     }
 
-    cout << m << ' ' << n << endl;
     cout << "Done! "<< "# of nodes: " << n << "; # of edges: " << m << endl;
-    for(int i = 0; i < 30; i++){
-      cout << Y[i] << ' ' << edges1[i] << ' ' << edges2[i] << endl;
-    }
 
     clock_t t1, t2;
     t1 = clock();
@@ -340,7 +335,6 @@ int main(int argc, char** argv){
     t2 = clock();
 
     cout << "time is " << ((float)t2 - (float)t1) / CLOCKS_PER_SEC << endl;
-    for(int i = 0;  i < 30; i++) printf("result is %f. \n", Y[i]);
     ofstream out( "./output_ffa.txt" );
     for(int i = 0; i < n; i++) out << Y[i] << endl;
 
