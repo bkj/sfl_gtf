@@ -2,8 +2,6 @@
 
 """
     make-graph.py
-    
-    !! Graphs generated in this way aren't working ATM
 """
 
 from __future__ import print_function
