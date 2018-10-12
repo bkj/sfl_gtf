@@ -48,5 +48,5 @@ if __name__ == "__main__":
     _ = supervx.solve(UseADMM=False, Verbose=True)
     
     fitted = supergraph.unpack(supervx.values)
-    fitted[np.abs(fitted) < 0.01] = 0
+    # fitted[np.abs(fitted) < 0.01] = 0
     print('\n'.join(fitted.astype(str)))
