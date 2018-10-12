@@ -1,9 +1,15 @@
-# Makefile
+# gtf/Makefile
 
-all: main
-	
-main: main.cpp graph.cpp graphtv.cpp
-	g++ -std=c++11 -o main main.cpp graph.cpp graphtv.cpp
-	
-clean:
-	rm -f main
+all :
+	mkdir -p bin
+	make ffa
+	make gtf
+
+ffa : ffagtf/min.cpp
+	g++ -std=c++11 -o bin/ffa $^
+
+gtf : graphtv/gtf.cpp graphtv/graph.cpp graphtv/graphtv.cpp
+	g++ -std=c++11 -o bin/gtf $^
+
+clean :
+	rm -rf bin

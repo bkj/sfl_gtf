@@ -101,7 +101,6 @@ void Graph::dyadicparametricTV(float erreur)
     i->label=0;
   }
 
-	// for (l=numlevel-1;l>=0;l--) {
       do {
 	maxflow_init();
 
@@ -285,6 +284,7 @@ void Graph::dyadicparametricTV(float erreur)
     free(nums); free(averages);
 }
 
-double Graph::what_value(node_id i) {
-  return (double) values[(((node*) i)->label)];
-}
+//int Graph::what_label(node_id i) { return (int) (((node*) i)->label) ; }
+double Graph::what_value(node_id i)
+{
+  return (double) values[(((node*) i)->label)] ; }
