@@ -33,6 +33,7 @@ with open('_data/e', 'w') as f:
         f.write('%d %d\n' % (src, dst))
 
 x = np.random.uniform(-10, 10, size=num_nodes)
+
 np.savetxt('_data/n', x, '%.3f')
 
 print('make-graph.py: wrote _data/{e,n}', file=sys.stderr)
