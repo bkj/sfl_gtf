@@ -5,8 +5,11 @@
 rm -rf results
 mkdir -p results
 
-make clean
-make
+make clean -s
+make -s
+
+echo "generating graph"
+python _data/make-graph.py
 
 # original c++ version
 ./gtf > results/gtf
