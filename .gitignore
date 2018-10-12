@@ -1,3 +1,7 @@
+_data/nodes.txt
+_data/edges.txt
+ffa
+gtf
 reference/snap/*
 results/*
 *.pyc

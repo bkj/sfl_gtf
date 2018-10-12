@@ -12,11 +12,8 @@ import numpy as np
 a = np.array([float(xx) for xx in open(sys.argv[1]).read().splitlines()])
 b = np.array([float(xx) for xx in open(sys.argv[2]).read().splitlines()])
 
-print(a.shape)
-print(b.shape)
-
-a = a.round(3)
-b = b.round(3)
+a = a.round(2)
+b = b.round(2)
 
 z = np.column_stack([a, b])
 print('nonzero entries:')

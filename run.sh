@@ -5,8 +5,13 @@
 rm -rf results
 mkdir -p results
 
-make clean
-make
+make clean -s
+make -s
+
+echo "generating graph"
+python _data/make-graph.py
+
+echo "running various versions"
 
 # original c++ version
 ./gtf > results/gtf
@@ -19,5 +24,14 @@ python reference/sfl.py \
     --node-path _data/nodes.txt \
     --edge-path _data/edges.txt > results/reference
 
-# check results
-python validate.py results/cpp results/reference
+echo "==========================="
+echo "validate gtf ffa"
+python validate.py results/gtf results/ffa
+
+echo "==========================="
+echo "validate gtf reference"
+python validate.py results/gtf results/reference
+
+echo "==========================="
+echo "validate ffa reference"
+python validate.py results/ffa results/reference
