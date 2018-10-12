@@ -13,9 +13,9 @@ import networkx as nx
 num_nodes = 200
 p = 0.01
 
-g = nx.erdos_renyi_graph(num_nodes, p=p)
+g = nx.erdos_renyi_graph(num_nodes, p=p, directed=True)
 
-for node in nx.isolates(g):
+for node in list(nx.isolates(g)):
     g.remove_node(node)
 
 adj = nx.adjacency_matrix(g).tocoo()
