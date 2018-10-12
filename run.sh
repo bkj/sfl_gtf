@@ -8,8 +8,11 @@ mkdir -p results
 make clean
 make
 
-# c++ version
-./main > results/cpp
+# original c++ version
+./gtf > results/gtf
+
+# FFA c++ version
+./ffa > results/ffa
 
 # python version
 python reference/sfl.py \
