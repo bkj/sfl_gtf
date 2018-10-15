@@ -500,6 +500,13 @@ Graph::flowtype Graph::maxflow()
 	}
 
 	delete nodeptr_block;
+
+	printf("\ntr_cap in this run is: \n");
+  for (i=node_block->ScanFirst(); i; i=node_block->ScanNext()) {
+    printf("%f \n",i->tr_cap);
+  }
+
+
 	return flow;
 }
 

@@ -2,8 +2,8 @@
 
 # run.sh
 
-rm -rf results
-mkdir -p results
+rm -rf results bin
+mkdir -p results bin
 
 make clean -s
 make -s
@@ -14,23 +14,23 @@ python _data/make-graph.py
 echo "running various versions"
 
 # original c++ version
-./gtf > results/gtf
+./bin/gtf > results/graphtv
 
 # FFA c++ version
-./ffa > results/ffa
+./bin/ffa > results/ffa
 
 # python version
 python reference/sfl.py \
-    --node-path _data/nodes.txt \
-    --edge-path _data/edges.txt > results/reference
+    --node-path _data/n \
+    --edge-path _data/e > results/reference
 
 echo "==========================="
 echo "validate gtf ffa"
-python validate.py results/gtf results/ffa
+python validate.py results/graphtv results/ffa
 
 echo "==========================="
 echo "validate gtf reference"
-python validate.py results/gtf results/reference
+python validate.py results/graphtv results/reference
 
 echo "==========================="
 echo "validate ffa reference"

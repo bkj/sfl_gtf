@@ -93,6 +93,7 @@ double** minCut(double** graph, int s, int t, bool *visited, const int V) {
 
         // update residual capacities of the edges and reverse edges
         // along the path
+        //printf("residual\n");
         for (v = t; v != s; v = parent[v]) {
             u = parent[v];
             //printf("%d -> %d\n", u, v);
@@ -301,8 +302,8 @@ int main(int argc, char** argv){
     int m, n;
     double *Y;
 
-    string e_file_name = "./_data/edges.txt";
-    string n_file_name = "./_data/nodes.txt";
+    string e_file_name = "./_data/e";
+    string n_file_name = "./_data/n";
 
     ifstream n_infile(n_file_name);
     ifstream e_infile(e_file_name);
@@ -324,10 +325,15 @@ int main(int argc, char** argv){
       Y[j++] = tm3;
     }
 
+    //cout << "Done! "<< "# of nodes: " << n << "; # of edges: " << m << endl;
+
+    clock_t t1, t2;
+    t1 = clock();
     graph_tv(Y, n, m, edges1, edges2, lambda1, 0.0);
     soft_thresh(Y, lambda2, n);
+    t2 = clock();
 
+    //cout << "time is " << ((float)t2 - (float)t1) / CLOCKS_PER_SEC << endl;
     for(int i = 0; i < n; i++) cout << Y[i] << endl;
-
   return 0;
 }

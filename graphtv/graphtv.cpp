@@ -284,7 +284,9 @@ void Graph::dyadicparametricTV(float erreur)
     free(inactivelabel);
     free(nums); free(averages);
 }
+/***********************************************************************/
 
-double Graph::what_value(node_id i) {
-  return (double) values[(((node*) i)->label)];
-}
+//int Graph::what_label(node_id i) { return (int) (((node*) i)->label) ; }
+double Graph::what_value(node_id i)
+{ //printf("u are calling me buddy! \n");
+  return (double) values[(((node*) i)->label)] ; }
