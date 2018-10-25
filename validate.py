@@ -16,8 +16,8 @@ a = a.round(2)
 b = b.round(2)
 
 z = np.column_stack([a, b])
-print('nonzero entries:')
-print(z[z.sum(axis=-1) != 0])
+print('nonzero entries: %d' % (z.sum(axis=-1) != 0).sum())
+# print(z[z.sum(axis=-1) != 0])
 
 if np.allclose(a, b):
     print("PASS")

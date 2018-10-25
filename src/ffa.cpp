@@ -82,6 +82,7 @@ double** minCut(double** graph, int s, int t, bool *visited, const int V) {
     // Augment the flow while there is a path from source to sink
     int counter = 0;
     while (bfs(rGraph, s, t, parent, V)) {
+        std::cerr << ".";
         // Find minimum residual capacity of the edges along the
         // path filled by BFS. Or we can say find the maximum flow
         // through the path found.
@@ -102,6 +103,7 @@ double** minCut(double** graph, int s, int t, bool *visited, const int V) {
         counter++;
         max_flow += path_flow;
     }
+    std::cerr << std::endl;
 
     // Flow is maximum now, find vertices reachable from s
     memset(visited, false, V*sizeof(visited[0]));
@@ -190,7 +192,9 @@ void graph_tv(double *Y,// value of nodes
         }
 
         bool *visited = new bool[V];
+        std::cerr << "minCut: start" << std::endl;
         graph = minCut(graph, 0, 1, visited, V);
+        std::cerr << "minCut: done" << std::endl;
 
         memset(averages,0,nlab*sizeof(captype));
         memset(nums,0,nlab*sizeof(int));
