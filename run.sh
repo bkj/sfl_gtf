@@ -8,47 +8,42 @@ mkdir -p results
 make clean -s
 make -s
 
-echo "generating graph"
-python _data/make-graph.py
+# echo "generating graph"
+# python _data/make-graph.py
+python num_cc.py
 
-# original c++ version
-# ./gtf > results/gtf
+# --
+# BKJ c++ version
 
-# FFA c++ version
-# ./ffa > results/ffa
+echo "============================================="
+echo "c++ (bkj)"
 
-# BKJ c++ versoin
-./bkj > results/bkj
+./bkj _data/nodes.txt _data/edges.txt > results/bkj
 
+python reference/sfl.py \
+    --validate results/bkj \
+    --node-path _data/nodes.txt  \
+    --edge-path _data/edges.txt
+
+# --
+# FFA C++ version
+
+echo "============================================="
+echo "c++ (ffa)"
+
+./ffa _data/nodes.txt _data/edges.txt > results/ffa
+
+python reference/sfl.py \
+    --validate results/ffa \
+    --node-path _data/nodes.txt  \
+    --edge-path _data/edges.txt
+
+# --
 # python version
+
+echo "============================================="
+echo "python"
+
 python reference/sfl.py \
     --node-path _data/nodes.txt \
     --edge-path _data/edges.txt > results/reference
-
-echo "==========================="
-# echo "validate gtf ffa"
-# python validate.py results/gtf results/ffa
-
-# echo "validate gtf reference"
-# python validate.py results/gtf results/reference
-
-echo "validate bkj reference"
-python validate.py results/bkj results/reference
-
-# echo "validate bkj reference"
-# python validate.py results/ffa results/bkj
-
-
-# # >>
-
-# python reference/sfl.py \
-#     --node-path _data/taxi_n \
-#     --edge-path _data/taxi_e > results/taxi_reference
-
-# cp _data/taxi_n _data/nodes.txt
-# cp _data/taxi_e _data/edges.txt
-
-# ./ffa > results/ffa
-# ./bkj > results/bkj
-
-# # <<

@@ -44,7 +44,7 @@ class SuperVX(object):
             int_edges = np.array(superedges[sid, sid])
             gvx.SetNodeObjective(sid, (
                 0.5 * sum_squares(v - sfeats) + 
-                self.reg_sparsity * norm1(v) + 
+                self.reg_sparsity * norm1(v) +
                 self.reg_edge * norm1(v[int_edges[:,0]] - v[int_edges[:,1]])
             ))
             values[sid] = v
@@ -74,13 +74,13 @@ class SuperGraph(object):
     
     def _partition(self, G, partition_mode, num_partitions):
         
-        print("SuperGraph: %s partition" % str(partition_mode), file=sys.stderr)
+        # print("SuperGraph: %s partition" % str(partition_mode), file=sys.stderr)
         t = time()
         
         if partition_mode == 'community_louvain':
             """ partition w/ louvain modularity """
             from community import community_louvain
-            print("SuperGraph: metis partition", file=sys.stderr)
+            # print("SuperGraph: metis partition", file=sys.stderr)
             partition = community_louvain.best_partition(G)
             partition = np.array([p[1] for p in sorted(partition.items(), key=lambda x: x[0])])
         
@@ -94,7 +94,7 @@ class SuperGraph(object):
             partition = np.ones(G.number_of_nodes(), dtype=int)
         
         n_partitions = np.unique(partition).shape[0]
-        print("SuperGraph: %d partitions in %fs" % (n_partitions, time() - t), file=sys.stderr)
+        # print("SuperGraph: %d partitions in %fs" % (n_partitions, time() - t), file=sys.stderr)
         return partition
     
     def _make_supernodes(self, feats, partition):
