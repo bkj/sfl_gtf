@@ -295,7 +295,7 @@ void soft_thresh(double *Y, const double thresh, const int n){
 
 
 int main(int argc, char** argv){
-    double lambda1 = 6;
+    double lambda1 = 3;
     double lambda2 = 3;
     int *edges1, *edges2;
     bool big_graph = false;
