@@ -16,23 +16,26 @@ echo "running various versions"
 # original c++ version
 # ./bin/gtf > results/graphtv
 
-# FFA c++ version
+# python version
+
+# pure python implementation
+python main.py > results/python
+python reference/sfl.py \
+    --validate results/python \
+    --node-path _data/n  \
+    --edge-path _data/e
+
+python reference/sfl.py \
+    --node-path _data/n \
+    --edge-path _data/e > results/reference
+
+# # FFA c++ version
 ./bin/ffa > results/ffa
 python reference/sfl.py \
     --validate results/ffa \
     --node-path _data/n  \
     --edge-path _data/e
 
-# python version
-python reference/sfl.py \
-    --node-path _data/n \
-    --edge-path _data/e > results/reference
-
-python main.py > results/python
-python reference/sfl.py \
-    --validate results/python \
-    --node-path _data/n  \
-    --edge-path _data/e
 
 # echo "==========================="
 # echo "validate gtf ffa"

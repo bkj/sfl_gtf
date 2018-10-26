@@ -1,6 +1,27 @@
+from __future__ import print_function
+
+import sys
 import pandas as pd
 import numpy as np
 import networkx as nx
+
+from networkx.algorithms.flow import boykov_kolmogorov
+from networkx.algorithms.flow import dinitz
+from networkx.algorithms.flow import edmonds_karp
+from networkx.algorithms.flow import preflow_push
+from networkx.algorithms.flow import shortest_augmenting_path
+
+flow_funcs = [
+    boykov_kolmogorov,
+    dinitz,
+    edmonds_karp,
+    preflow_push,
+    shortest_augmenting_path,
+]
+
+flow_func = preflow_push
+
+# --
 
 from heapq import heappush, heappop
 
@@ -8,15 +29,18 @@ np.set_printoptions(linewidth=130)
 
 def prune(g):
     for edge in list(g.edges):
-        if g.edges[edge]['weight'] == 0:
+        if g.edges[edge]['weight'] <= 0:
             g.remove_edge(*edge)
     
     return g
 
-alpha = 3
+alpha = 6
 
 def create_graph():
     edges = pd.read_csv('./_data/e', sep=' ', header=None, skiprows=1).values
+    edges = edges[edges[:,0] != edges[:,1]]
+    assert (edges[:,0] < edges[:,1]).all()
+    
     nodes = pd.read_csv('./_data/n', header=None).values.squeeze()
     assert len(set(np.hstack(edges))) == nodes.shape[0]
     
@@ -108,8 +132,28 @@ def max_flow(g):
         counter += 1
         mf += path_flow
     
-    rg = prune(rg)
     return rg, mf
+
+def gtf_max_flow(g, mode='nx'):
+    if mode == 'manual':
+        g, mf = max_flow(g)
+    
+    elif mode == 'nx':
+        mf, flow = nx.maximum_flow(g, 'src', 'trg', capacity='weight', flow_func=flow_func)
+        for src, tmp in flow.items():
+            for dst, f in tmp.items():
+                g.edges[(src, dst)]['weight'] -= f
+                ensure_edge(g, (dst, src))
+                g.edges[(dst, src)]['weight'] += f
+        
+    else:
+        raise NotImplemented
+    
+    print("maxflow=%f" % mf, file=sys.stderr)
+    
+    prune(g)
+    visited = nx.descendants(g, 'src')
+    return g, visited
 
 
 g, node_mean = create_graph()
@@ -121,26 +165,26 @@ averages      = defaultdict(lambda : 0)
 nextlabel     = defaultdict(lambda : 0)
 nums          = defaultdict(lambda : 0)
 values        = defaultdict(lambda : 0)
-inactivelabel = defaultdict(lambda : 0)
+inactivelabel = set([])
 values        = {0 : node_mean}
 label         = np.zeros(len(g.nodes), dtype=int)
-alive         = dict(zip(g.nodes, [True] * len(g.nodes)))
+alive         = set(g.nodes)
 
 it = 0
 flagstop = 1
 while flagstop:
-    g, mf = max_flow(g)
-    visited = nx.descendants(g, 'src')
+    
+    g, visited = gtf_max_flow(g)
     
     for n in range(nlab):
-        averages[n] = 0
-        nums[n] = 0
+        averages[n]  = 0
+        nums[n]      = 0
         nextlabel[n] = 0
     
     oldnlab = nlab
     for node in g.nodes:
         if node != 'src' and node != 'trg':
-            if alive[node]:
+            if node in alive:
                 if node in visited:
                     curr_lab = label[node]
                     l = nextlabel[curr_lab]
@@ -148,16 +192,15 @@ while flagstop:
                         l = nlab
                         nextlabel[curr_lab] = nlab
                         nlab        += 1
-                        averages[l]      = 0
-                        nums[l]          = 0
-                        nextlabel[l]     = 0
-                        inactivelabel[l] = 0
-                        values[l]        = values[curr_lab]
+                        averages[l]  = 0
+                        nums[l]      = 0
+                        nextlabel[l] = 0
+                        values[l]    = values[curr_lab]
                     
                     label[node] = l
                     if ('src', node) in g.edges:
                         averages[l] += g.edges[('src', node)]['weight']
-                    nums[l] += 1
+                
                 else:
                     l = label[node]
                     if (node, 'trg') in g.edges:
@@ -167,18 +210,21 @@ while flagstop:
                         if n in visited:
                             remove_edge(g, (node, n))
                     
-                    nums[l] += 1
-
+                nums[l] += 1
+    
+    # print(len(g.nodes), len(visited), file=sys.stderr)
+    # print(averages, file=sys.stderr)
+    
     for l in nums.keys():
         if l < oldnlab:
-            if not inactivelabel[l]:
+            if l not in inactivelabel:
                 if nextlabel[l] == 0:
                     averages[l] = 0
-                    inactivelabel[l] = 1
+                    inactivelabel.add(l)
                 elif nums[l] == 0:
-                    inactivelabel[l] = 1
-                    inactivelabel[nextlabel[l]] = 1
-                    averages[nextlabel[l]] = 0
+                    inactivelabel.add(l)
+                    inactivelabel.add(nextlabel[l])
+                    averages[nextlabel[l]]      = 0
                 else:
                     averages[l] = averages[l] / nums[l]
                     values[l] += averages[l]
@@ -187,39 +233,43 @@ while flagstop:
         else:
             averages[l] = averages[l] / nums[l]
             values[l] += averages[l]
-
+    
+    # print(averages, file=sys.stderr)
+    
     flagstop = 0
     for node in g.nodes:
         if node != 'src' and node != 'trg':
-            if alive[node]:
+            if node in alive:
                 l = label[node]
-                if inactivelabel[l]:
+                if l in inactivelabel:
+                    
                     if node in visited:
                         remove_edge(g, ('src', node))
                     else:
                         remove_edge(g, (node, 'trg'))
-                
-                    alive[node] = 0
-                    inactivelabel[l] = 1
+                    
+                    alive.remove(node)
+                    inactivelabel.add(l)
                 else:
                     flagstop = 1
+                    
                     if node in visited:
-                        ensure_edge(g, ('src', node))
-                        g.edges[('src', node)]['weight'] -= averages[l]
-                        if g.edges[('src', node)]['weight'] < 0:
-                            tmp = g.edges[('src', node)]['weight']
-                            ensure_edge(g, (node, 'trg'))
-                            g.edges[('src', node)]['weight'] = g.edges[(node, 'trg')]['weight']
-                            g.edges[(node, 'trg')]['weight'] = -tmp
+                        fwd = ('src', node)
+                        bwd = (node, 'trg')
+                        delta = - averages[l]
                     else:
-                        ensure_edge(g, (node, 'trg'))
-                        g.edges[(node, 'trg')]['weight'] += averages[l]
-                        if g.edges[(node, 'trg')]['weight'] < 0:
-                            tmp = g.edges[(node, 'trg')]['weight']
-                            ensure_edge(g, ('src', node))
-                            g.edges[(node, 'trg')]['weight'] = g.edges[('src', node)]['weight']
-                            g.edges[('src', node)]['weight'] = -tmp
-                            
+                        fwd = (node, 'trg')
+                        bwd = ('src', node)
+                        delta = averages[l]
+                    
+                    ensure_edge(g, fwd)
+                    g.edges[fwd]['weight'] += delta
+                    if g.edges[fwd]['weight'] < 0:
+                        tmp = g.edges[fwd]['weight']
+                        ensure_edge(g, bwd)
+                        g.edges[fwd]['weight'] = g.edges[bwd]['weight']
+                        g.edges[bwd]['weight'] = -tmp
+    
     prune(g)
     
     it += 1

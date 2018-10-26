@@ -20,8 +20,8 @@ def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--node-path', type=str)
     parser.add_argument('--edge-path', type=str)
-    parser.add_argument('--reg-sparsity', type=float, default=3)  # 3
-    parser.add_argument('--reg-edge', type=float, default=3)      # 3
+    parser.add_argument('--reg-sparsity', type=float, default=6)  # 3
+    parser.add_argument('--reg-edge', type=float, default=6)      # 3
     parser.add_argument('--validate', type=str)
     return parser.parse_args()
 
@@ -30,6 +30,8 @@ if __name__ == "__main__":
     args = parse_args()
     
     edges = pd.read_csv(args.edge_path, header=None, sep=' ', skiprows=1).values
+    edges = edges[edges[:,0] != edges[:,1]]
+    assert (edges[:,0] < edges[:,1]).all()
     feats = np.array([float(xx) for xx in open(args.node_path).read().splitlines()])
     
     supergraph = SuperGraph(
@@ -47,11 +49,10 @@ if __name__ == "__main__":
     )
     
     if not args.validate:
-        _ = supervx.solve(UseADMM=False, Verbose=False, Rho=1e-10, EpsAbs=1e-12, EpsRel=1e-12)
+        _ = supervx.solve(UseADMM=False, Verbose=False, EpsAbs=1e-12, EpsRel=1e-12)
         fitted = supergraph.unpack(supervx.values)
-        fitted[np.abs(fitted) < 0.01] = 0
+        # fitted[np.abs(fitted) < 0.01] = 0
         print('\n'.join(fitted.astype(str)))
-        
         obj = supervx.gvx.GetTotalProblemValue()
     else:
         fitted = pd.read_csv(args.validate, header=None).values.squeeze()

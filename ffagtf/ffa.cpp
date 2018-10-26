@@ -103,6 +103,7 @@ double** minCut(double** graph, int s, int t, bool *visited, const int V) {
         counter++;
         max_flow += path_flow;
     }
+    std::cerr << "max_flow=" << max_flow << std::endl;
 
     // Flow is maximum now, find vertices reachable from s
     memset(visited, false, V*sizeof(visited[0]));
@@ -295,8 +296,8 @@ void soft_thresh(double *Y, const double thresh, const int n){
 
 
 int main(int argc, char** argv){
-    double lambda1 = 3;
-    double lambda2 = 3;
+    double lambda1 = 6;
+    double lambda2 = 6;
     int *edges1, *edges2;
     bool big_graph = false;
     int m, n;

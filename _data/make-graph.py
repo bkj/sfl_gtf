@@ -11,8 +11,8 @@ import numpy as np
 import networkx as nx
 import pandas as pd
 
-num_nodes = 100
-p = 0.1
+num_nodes = 300
+p = 0.01
 
 g = nx.erdos_renyi_graph(num_nodes, p=p)
 
